@@ -9,7 +9,7 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
-      node: 20.x
+      node: 20.18.0
       vars:
         EXPO_TOKEN: $EXPO_TOKEN
         APP_ENV: development
@@ -69,7 +69,7 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
-      node: 20.x
+      node: 20.18.0
       vars:
         EXPO_TOKEN: $EXPO_TOKEN
         APP_ENV: preview
@@ -130,7 +130,7 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
-      node: 20.x
+      node: 20.18.0
       vars:
         EXPO_TOKEN: $EXPO_TOKEN
         APP_ENV: production
