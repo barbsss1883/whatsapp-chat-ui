@@ -1,0 +1,181 @@
+workflows:
+
+  # ─────────────────────────────────────────────
+  # DEVELOPMENT  — developmentClient, internal
+  # ─────────────────────────────────────────────
+  expo-development-build:
+    name: Expo – Development Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20.x
+      vars:
+        EXPO_TOKEN: $EXPO_TOKEN
+        APP_ENV: development
+
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: "develop"
+          include: true
+
+    scripts:
+      - name: Instalar dependencias
+        script: npm install
+
+      - name: Instalar EAS CLI
+        script: npm install -g eas-cli@latest
+
+      - name: Autenticar con Expo
+        script: eas whoami
+
+      - name: Build Android – development
+        script: |
+          eas build \
+            --platform android \
+            --profile development \
+            --non-interactive \
+            --no-wait
+
+      - name: Build iOS – development
+        script: |
+          eas build \
+            --platform ios \
+            --profile development \
+            --non-interactive \
+            --no-wait
+
+    artifacts:
+      - "*.apk"
+      - "*.ipa"
+
+    publishing:
+      email:
+        recipients:
+          - luiseguzman1883@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # PREVIEW  — internal distribution, sin store
+  # ─────────────────────────────────────────────
+  expo-preview-build:
+    name: Expo – Preview Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20.x
+      vars:
+        EXPO_TOKEN: $EXPO_TOKEN
+        APP_ENV: preview
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "release/*"
+          include: true
+        - pattern: "staging"
+          include: true
+
+    scripts:
+      - name: Instalar dependencias
+        script: npm install
+
+      - name: Instalar EAS CLI
+        script: npm install -g eas-cli@latest
+
+      - name: Autenticar con Expo
+        script: eas whoami
+
+      - name: Build Android – preview
+        script: |
+          eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --no-wait
+
+      - name: Build iOS – preview
+        script: |
+          eas build \
+            --platform ios \
+            --profile preview \
+            --non-interactive \
+            --no-wait
+
+    artifacts:
+      - "*.apk"
+      - "*.ipa"
+
+    publishing:
+      email:
+        recipients:
+          - luiseguzman1883@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ─────────────────────────────────────────────
+  # PRODUCTION  — autoIncrement, store release
+  # ─────────────────────────────────────────────
+  expo-production-build:
+    name: Expo – Production Build
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+
+    environment:
+      node: 20.x
+      vars:
+        EXPO_TOKEN: $EXPO_TOKEN
+        APP_ENV: production
+
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "v*"
+          include: true
+
+    scripts:
+      - name: Instalar dependencias
+        script: npm install
+
+      - name: Instalar EAS CLI
+        script: npm install -g eas-cli@latest
+
+      - name: Autenticar con Expo
+        script: eas whoami
+
+      - name: Build Android – production
+        script: |
+          eas build \
+            --platform android \
+            --profile production \
+            --non-interactive \
+            --no-wait
+
+      - name: Build iOS – production
+        script: |
+          eas build \
+            --platform ios \
+            --profile production \
+            --non-interactive \
+            --no-wait
+
+    artifacts:
+      - "*.aab"
+      - "*.ipa"
+
+    publishing:
+      email:
+        recipients:
+          - luiseguzman1883@gmail.com
+        notify:
+          success: true
+          failure: true
